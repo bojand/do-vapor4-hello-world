@@ -23,7 +23,7 @@ RUN swift package resolve
 COPY . .
 
 # Build everything, with optimizations and test discovery
-RUN swift build -v -c release
+RUN swift build -v --enable-test-discovery -c release
 
 # Switch to the staging area
 WORKDIR /staging
