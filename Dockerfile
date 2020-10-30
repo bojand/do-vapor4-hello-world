@@ -3,6 +3,12 @@
 # ================================
 FROM swift:5.3-focal as build
 
+# Install OS updates and, if needed, sqlite3
+RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+    && apt-get -q update \
+    && apt-get -q dist-upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
+
 # Set up a build area
 WORKDIR /build
 
@@ -17,13 +23,13 @@ RUN swift package resolve
 COPY . .
 
 # Build everything, with optimizations and test discovery
-RUN swift build -v -c release
+RUN swift build --enable-test-discovery -c release
 
 # Switch to the staging area
 WORKDIR /staging
 
 # Copy main executable to staging area
-RUN cp "$(swift build -v --package-path /build -c release --show-bin-path)/Run" ./
+RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Run" ./
 
 # Uncomment the next line if you need to load resources from the `Public` directory.
 # Ensure that by default, neither the directory nor any of its contents are writable.

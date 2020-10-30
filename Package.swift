@@ -17,6 +17,10 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor")
             ]
         ),
-        .target(name: "Run", dependencies: [.target(name: "App")])
+        .target(name: "Run", dependencies: [.target(name: "App")]),
+        .testTarget(name: "AppTests", dependencies: [
+            .target(name: "App"),
+            .product(name: "XCTVapor", package: "vapor"),
+        ])
     ]
 )
